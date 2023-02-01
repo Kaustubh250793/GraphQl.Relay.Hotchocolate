@@ -1,0 +1,83 @@
+type Query {
+  posts: [Post]
+  postById(id: ID!): Post
+  postByTitle(title: String!): Post
+  tags: [Tag]
+}
+
+type Mutation {
+  addPost(input: AddPostInput!): AddPostPayload!
+  updatePost(input: UpdatePostInput!): UpdatePostPayload!
+  addTag(input: AddTagInput!): AddTagPayload!
+  deleteTag(id: ID!): DeleteTagPayload!
+}
+
+type Subscription {
+  onPostUpdated: Post
+}
+
+type Post {
+  id: ID!
+  tags: [Tag!]!
+  title: String!
+  content: String!
+  created: DateTime!
+  modified: DateTime
+}
+
+type Tag {
+  id: ID!
+  posts: [Post!]!
+  name: String!
+}
+
+"""
+The `DateTime` scalar represents an ISO-8601 compliant date time type.
+"""
+scalar DateTime
+
+input AddTagInput {
+  name: String!
+}
+
+type AddTagPayload {
+  tag: Tag
+  errors: [ApiError!]
+}
+
+input UpdatePostInput {
+  id: ID!
+  title: String
+  content: String
+  tags: [PostTagInput]
+}
+
+type UpdatePostPayload {
+  post: Post
+  errors: [ApiError!]
+}
+
+input AddPostInput {
+  title: String!
+  content: String!
+  tags: [PostTagInput!]!
+}
+
+type AddPostPayload {
+  post: Post
+  errors: [ApiError!]
+}
+
+type DeleteTagPayload {
+  tag: Tag
+  errors: [ApiError!]
+}
+
+input PostTagInput {
+  id: Int!
+}
+
+type ApiError {
+  code: String!
+  message: String!
+}
